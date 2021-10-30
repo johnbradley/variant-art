@@ -2,37 +2,23 @@
   <v-app>
     <v-app-bar
       app
-      color="primary"
-      dark
     >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
+      <v-icon class="ma-2">mdi-graph</v-icon>
+      <h3>Variant Call Art</h3>
 
       <v-spacer></v-spacer>
-
+      <v-btn text>
+          <router-link to="/">Home</router-link>
+      </v-btn>      
+      <v-btn text>
+          <router-link to="/about">About</router-link>
+      </v-btn>
+      
       <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
+        href="https://github.com/johnbradley"
         target="_blank"
         text
-      >
-        <span class="mr-2">Latest Release</span>
+      > Source
         <v-icon>mdi-open-in-new</v-icon>
       </v-btn>
     </v-app-bar>
