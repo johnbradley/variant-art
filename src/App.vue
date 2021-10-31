@@ -7,13 +7,16 @@
       <h3>Variant Call Art</h3>
 
       <v-spacer></v-spacer>
-      <v-btn text>
-          <router-link to="/">Home</router-link>
-      </v-btn>      
-      <v-btn text>
-          <router-link to="/about">About</router-link>
-      </v-btn>
-      
+      <router-link to="/">
+        <v-btn text>
+          Home
+        </v-btn>
+      </router-link>
+      <router-link to="/about">
+        <v-btn text>
+            About
+        </v-btn>
+      </router-link>
       <v-btn
         href="https://github.com/johnbradley"
         target="_blank"

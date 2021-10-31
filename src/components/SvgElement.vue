@@ -14,13 +14,13 @@ export default {
             type: String,
             required: true
         },
-        attrString: {
-            type: String
+        attrs: {
+            type: Object
         }
     },
     computed: {
         attrObj() {
-            return { cx: 50, cy: 50, r: 10, fill: 'red' }
+            return this.attrs
         }
     }
 }
