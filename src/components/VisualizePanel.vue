@@ -67,6 +67,19 @@ const blockConfig = {
     vOffsetFactor: 2,
 }
 
+const connectorConfig = {
+    stroke: 'black',
+    strokeWidth: 2,
+    height: 10,
+    initialOffset: 10
+}
+
+function spacerBlock(key, x, y, size) {
+    const vOffset = 0
+    const fill = 'white'
+    return roundedBlock(key, x, y, vOffset, size, fill)
+}
+
 function roundedBlock(key, x, y, vOffset, size, fill) {
     const [width, height] = [size * blockConfig.baseWidth, blockConfig.baseHeight]
     const adjustedY = y + vOffset * height * blockConfig.vOffsetFactor
@@ -77,11 +90,16 @@ function roundedBlock(key, x, y, vOffset, size, fill) {
     )
 }
 
-function vertConnector(key, x, y, vOffsetFrom, vOffsetTo) {
+function vertConnector(key, x, y, vOffset) {
+    if (vOffset < 0) {
+        vOffset += 1
+    }
+    const adjustedY = y + vOffset * blockConfig.baseHeight * blockConfig.vOffsetFactor
     const adjustedX = x + (blockConfig.baseWidth / 2);
-    const y1 = y + blockConfig.baseHeight + vOffsetFrom * blockConfig.baseHeight * blockConfig.vOffsetFactor
-    const y2 = y + blockConfig.baseHeight + vOffsetTo * blockConfig.baseHeight * blockConfig.vOffsetFactor
-    return svgLine(key, adjustedX, y1, adjustedX, y2, 'black', 2)
+    const y1 = adjustedY
+    const y2 = y1 - connectorConfig.height
+    return svgLine(key, adjustedX, y1, adjustedX, y2, 
+        connectorConfig.stroke, connectorConfig.strokeWidth)
 }
 
 function horizConnector(key, x, y) {
@@ -89,7 +107,8 @@ function horizConnector(key, x, y) {
     const adjustedX = x
     const x1 = adjustedX
     const x2 = adjustedX + blockConfig.baseWidth
-    return svgLine(key, x1, adjustedY, x2, adjustedY, 'black', 2)
+    return svgLine(key, x1, adjustedY, x2, adjustedY, 
+        connectorConfig.stroke, connectorConfig.strokeWidth)
 }
 
 function svgRect(key, x, y, width, height, rx, fill, stroke, strokeWidth) {
@@ -121,8 +140,13 @@ function svgLine(key, x1, y1, x2, y2, stroke, strokeWidth) {
             stroke: stroke,
             "stroke-width": strokeWidth,
         },
-        newX: x2,
+        newX: Math.max(x1, x2),
     }
+}
+
+function makeName(nameData) {
+    nameData.idx += 1
+    return `s${nameData.idx}`
 }
 
 export default {
@@ -143,18 +167,6 @@ export default {
         return {
             startX: 20,
             startY: 95,
-            svgArray: [
-                roundedBlock('s5', 100, 100, 0, 2, 'white'),
-                horizConnector('s13', 120, 100),
-                roundedBlock('s6', 150, 100, 0, 1, 'orange'),
-                vertConnector('s7', 150, 100, 0, 1),
-                roundedBlock('s8', 150, 100, 1, 1, 'cyan'),
-                vertConnector('s9', 150, 100, 1, 2),
-                roundedBlock('s10', 150, 100, 2, 1, 'yellow'),
-                vertConnector('s11', 150, 100, 2, 3),
-                roundedBlock('s12', 150, 100, 3, 1, 'green'),  
-                horizConnector('s13', 150, 100),
-            ]
         }
     },
     computed: {
@@ -162,26 +174,65 @@ export default {
             const result = []
             var x = this.startX
             var y = this.startY
+            const nd = {
+                idx: 1
+            }
+
+            // beginning of shape
             var item
-            item = roundedBlock('s1', x, y, 0, 2, 'white')
+            item = spacerBlock(makeName(nd), x, y, 2)
             x = item.newX
             result.push(item)
 
-            item = horizConnector('s2', x, y)
+            item = horizConnector(makeName(nd), x, y)
             x = item.newX
             result.push(item)
 
-            var baseItem = roundedBlock('s3', x, y, 0, 1, 'cyan')
+            // first colored block
+            var baseItem = roundedBlock(makeName(nd), x, y, 0, 1, 'cyan')
             result.push(baseItem)
-            result.push(vertConnector('s4', x, y, 0, 1))
-            result.push(roundedBlock('s5', x, y, 1, 1, 'orange'))
+            
+            result.push(roundedBlock(makeName(nd), x, y, 1, 1, 'orange'))
+            result.push(vertConnector(makeName(nd), x, y, 1))
+
+            result.push(roundedBlock(makeName(nd), x, y, 2, 1, 'white'))
+            result.push(vertConnector(makeName(nd), x, y, 2))
+
             x = baseItem.newX
 
-            item = horizConnector('s6', x, y)
+            item = horizConnector(makeName(nd), x, y)
             x = item.newX
             result.push(item)
 
-            result.push(roundedBlock('s7', x, y, 0, 3, 'white'))
+            // second colored block
+            baseItem = roundedBlock(makeName(nd), x, y, 0, 1, 'yellow')
+            result.push(baseItem)
+            
+            result.push(roundedBlock(makeName(nd), x, y, -1, 1, 'cyan'))
+            result.push(vertConnector(makeName(nd), x, y, -1))
+
+            x = baseItem.newX
+
+            item = horizConnector(makeName(nd), x, y)
+            x = item.newX
+            result.push(item)
+            
+            // third colored block
+            baseItem = roundedBlock(makeName(nd), x, y, 0, 1, 'green')
+            result.push(baseItem)
+            
+            result.push(roundedBlock(makeName(nd), x, y, 1, 1, 'cyan'))
+            result.push(vertConnector(makeName(nd), x, y, 1))
+
+            x = baseItem.newX
+
+            item = horizConnector(makeName(nd), x, y)
+            x = item.newX
+            result.push(item)            
+
+            // end of shape
+
+            result.push(spacerBlock(makeName(nd), x, y, 3))
 
             return result
         },
