@@ -100,17 +100,22 @@ function spacerBlock(key, x, y, size) {
     return roundedBlock(key, x, y, vOffset, size, fill)
 }
 
-function roundedBlock(key, x, y, vOffset, size, fill) {
+function roundedBlock(key, x, y, vOffset, size, fill, rotate=null) {
     const [width, height] = [size * blockConfig.baseWidth, blockConfig.baseHeight]
     const adjustedY = y + vOffset * height * blockConfig.vOffsetFactor
+    var transform = null
+    if (rotate != null) {
+        transform = `rotate(${rotate} ${x+5} ${adjustedY+5})`
+    }
     return svgRect(
         key, x, adjustedY, width, height, 
         blockConfig.rx, fill, 
-        blockConfig.stroke, blockConfig.strokeWidth
+        blockConfig.stroke, blockConfig.strokeWidth,
+        transform
     )
 }
 
-function vertConnector(key, x, y, vOffset) {
+function vertConnector(key, x, y, vOffset, transform=null) {
     if (vOffset < 0) {
         vOffset += 1
     }
@@ -119,7 +124,8 @@ function vertConnector(key, x, y, vOffset) {
     const y1 = adjustedY
     const y2 = y1 - connectorConfig.height
     return svgLine(key, adjustedX, y1, adjustedX, y2, 
-        connectorConfig.stroke, connectorConfig.strokeWidth)
+        connectorConfig.stroke, connectorConfig.strokeWidth,
+        transform)
 }
 
 function horizConnector(key, x, y) {
@@ -139,7 +145,7 @@ const letterToColor = {
     C: "#CDFD34",
 }
 
-function svgRect(key, x, y, width, height, rx, fill, stroke, strokeWidth) {
+function svgRect(key, x, y, width, height, rx, fill, stroke, strokeWidth, transform=null) {
     return {
         key: key, 
         type: 'rect',
@@ -151,7 +157,8 @@ function svgRect(key, x, y, width, height, rx, fill, stroke, strokeWidth) {
             rx: rx,
             fill: fill,
             stroke: stroke,
-            "stroke-width": strokeWidth
+            "stroke-width": strokeWidth,
+            transform: transform,
         },
         newX: x + width,
     }
@@ -207,27 +214,27 @@ export default {
             }        
             const result = []
 
-            result.push( {
-                key: 'g', 
-                type: 'rect',
-                attrs: {
-                    x: 20,
-                    y: 20,
-                    width: 40,
-                    height: 40,
-                    fill: 'grey'
-                }, children: [{
+            /*
+            const gChildren = [{
                     key: 'a',
                     type: 'rect',
                     attrs: {
-                        x: 20,
-                        y: 20,
+                        x: 0,
+                        y: 0,
                         width: 20,
                         height: 30,
                         fill: 'red'                        
                     }
                 }]
-            })
+            gChildren.push()
+            result.push( {
+                key: 'g', 
+                type: 'g',
+                attrs: {
+                    x: x,
+                    y: y,                    
+                }, children: gChildren
+            })*/
 
             var item
             item = spacerBlock(makeName(nd), x, y, 2)
@@ -250,12 +257,15 @@ export default {
                     var vOffset = 1
                     for (const alt of variantCall.ALT) {
                         size = alt.length
+                        //size += 1
                         var actualVOffset = vOffset
+                        var rotate = 45
                         if (idx % 2 == 0) {
                             actualVOffset *= -1
+                            rotate = -45
                         }
                         color = letterToColor[alt[0]] || 'grey'
-                        result.push(roundedBlock(makeName(nd), x, y, actualVOffset, size, color))
+                        result.push(roundedBlock(makeName(nd), x, y, actualVOffset, size, color, rotate))
                         result.push(vertConnector(makeName(nd), x, y, actualVOffset))
                         vOffset += 1
                     }
