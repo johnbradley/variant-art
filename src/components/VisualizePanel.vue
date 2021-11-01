@@ -42,7 +42,13 @@
     </v-row>
     <v-row>
         <v-col>
-            <svg width="600" height="200" style="border:1px solid black">
+            <SvgPanZoom 
+                :zoomEnabled="true"
+                :controlIconsEnabled="true"
+                :fit="true"
+                :center="false"
+    >
+            <svg width="2000" height="200" style="border:1px solid black">
                 <SvgElement
                     v-for="svg in computedSvgArray"
                     :key="svg.key"
@@ -50,6 +56,7 @@
                     :attrs="svg.attrs"
                 />
             </svg>
+            </SvgPanZoom>
         </v-col>
     </v-row>
  </v-container>
@@ -57,6 +64,7 @@
 
 <script>
 import SvgElement from '../components/SvgElement'
+import SvgPanZoom from 'vue-svg-pan-zoom';
 
 const blockConfig = {
     baseWidth: 10,
@@ -111,6 +119,14 @@ function horizConnector(key, x, y) {
         connectorConfig.stroke, connectorConfig.strokeWidth)
 }
 
+
+const letterToColor = {
+    T: "#C43314",
+    A: "#1FCA23",
+    G: "#CB41FC",
+    C: "#CDFD34",
+}
+
 function svgRect(key, x, y, width, height, rx, fill, stroke, strokeWidth) {
     return {
         key: key, 
@@ -152,7 +168,8 @@ function makeName(nameData) {
 export default {
     name: 'VisualizePanel',
     components:{
-        SvgElement
+        SvgElement,
+        SvgPanZoom
     },
     props: {
         vcfData: Array,
@@ -171,14 +188,51 @@ export default {
     },
     computed: {
         computedSvgArray() {
-            const result = []
             var x = this.startX
             var y = this.startY
             const nd = {
                 idx: 1
+            }        
+            const result = []
+
+            var item
+            item = spacerBlock(makeName(nd), x, y, 2)
+            x = item.newX
+            result.push(item)
+
+
+            const firstVcfData = this.vcfData[0]
+            var idx = 0
+            for (const variantCall of firstVcfData.contents) {
+                if (variantCall.CHROM == this.selectedChromosome) {
+                    item = horizConnector(makeName(nd), x, y)
+                    x = item.newX
+                    result.push(item)
+
+                    var size = variantCall.REF.length
+                    var color = letterToColor[variantCall.REF[0]] || 'grey'
+                    var baseItem = roundedBlock(makeName(nd), x, y, 0, size, color)
+                    result.push(baseItem)
+                    var vOffset = 1
+                    for (const alt of variantCall.ALT) {
+                        size = alt.length
+                        var actualVOffset = vOffset
+                        if (idx % 2 == 0) {
+                            actualVOffset *= -1
+                        }
+                        color = letterToColor[alt[0]] || 'grey'
+                        result.push(roundedBlock(makeName(nd), x, y, actualVOffset, size, color))
+                        result.push(vertConnector(makeName(nd), x, y, actualVOffset))
+                        vOffset += 1
+                    }
+                    x = baseItem.newX               
+                }
+                idx += 1
             }
+            
 
             // beginning of shape
+            /*
             var item
             item = spacerBlock(makeName(nd), x, y, 2)
             x = item.newX
@@ -233,7 +287,7 @@ export default {
             // end of shape
 
             result.push(spacerBlock(makeName(nd), x, y, 3))
-
+            */
             return result
         },
         summaryVCFData() {

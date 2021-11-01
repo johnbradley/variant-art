@@ -29,7 +29,7 @@
   export default {
     name: 'Home',
     data: () => ({
-      state: 'visualize',
+      state: 'select-input',
       vcfData: [{
         file: "myfile1",
         contents: [
