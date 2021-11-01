@@ -54,7 +54,16 @@
                     :key="svg.key"
                     :shapeType="svg.type"
                     :attrs="svg.attrs"
-                />
+                    :children="svg.children"
+                >
+                    <SvgElement
+                        v-for="svgchild in svg.children"
+                        :key="svgchild.key"
+                        :shapeType="svgchild.type"
+                        :attrs="svgchild.attrs"
+                        :children="svgchild.children"
+                    />
+                </SvgElement>
             </svg>
             </SvgPanZoom>
         </v-col>
@@ -63,6 +72,9 @@
 </template>
 
 <script>
+// TODO: show all colors for a sequence
+//       add g and SvgElement children
+// TODO: rotate shapes
 import SvgElement from '../components/SvgElement'
 import SvgPanZoom from 'vue-svg-pan-zoom';
 
@@ -194,6 +206,28 @@ export default {
                 idx: 1
             }        
             const result = []
+
+            result.push( {
+                key: 'g', 
+                type: 'rect',
+                attrs: {
+                    x: 20,
+                    y: 20,
+                    width: 40,
+                    height: 40,
+                    fill: 'grey'
+                }, children: [{
+                    key: 'a',
+                    type: 'rect',
+                    attrs: {
+                        x: 20,
+                        y: 20,
+                        width: 20,
+                        height: 30,
+                        fill: 'red'                        
+                    }
+                }]
+            })
 
             var item
             item = spacerBlock(makeName(nd), x, y, 2)
