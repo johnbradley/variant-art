@@ -63,6 +63,8 @@
         })
       }
     })
+    //sort positions numerically
+    variantCalls.sort((a, b) => (a.POS > b.POS) ? 1 : -1)
     return variantCalls;
   }
 

@@ -48,7 +48,7 @@
                 :fit="true"
                 :center="false"
     >
-            <svg width="2000" height="200" style="border:1px solid black">
+            <svg width="1000" height="400" style="border:1px solid black">
                 <SvgElement
                     v-for="svg in computedSvgArray"
                     :key="svg.key"
@@ -100,7 +100,10 @@ function spacerBlock(key, x, y, size) {
     return roundedBlock(key, x, y, vOffset, size, fill)
 }
 
-function roundedBlock(key, x, y, vOffset, size, fill, rotate=null) {
+function roundedBlock(key, x, y, vOffset, size, fill, rotate=null, stroke=null) {
+    if (stroke == null) {
+        stroke = blockConfig.stroke
+    }
     const [width, height] = [size * blockConfig.baseWidth, blockConfig.baseHeight]
     const adjustedY = y + vOffset * height * blockConfig.vOffsetFactor
     var transform = null
@@ -113,6 +116,33 @@ function roundedBlock(key, x, y, vOffset, size, fill, rotate=null) {
         blockConfig.stroke, blockConfig.strokeWidth,
         transform
     )
+}
+
+function sequenceBlock(key, x, y, vOffset, seq, rotate=null) {
+    var size = seq.length
+    var fill = letterToColor[seq[0]] || 'grey'
+    const result = []
+    if (size == 1) {
+        result.push(roundedBlock(key, x, y, vOffset, size, fill, rotate))
+    } else {
+        //var block = roundedBlock(key, x, y, vOffset, size, "white", rotate)
+        //x = block.newX
+        //result.push(block)
+        var firstTransform = null
+        for (const letter of seq) {
+            fill = letterToColor[letter] || 'grey'
+            var block = roundedBlock(key, x, y, vOffset, 1, fill, rotate)
+            if (firstTransform == null) {
+                firstTransform = block.attrs.transform
+            } else {
+                block.attrs.transform = firstTransform
+            }
+            x = block.newX
+            result.push(block)     
+        }
+    }
+    return result
+    
 }
 
 function vertConnector(key, x, y, vOffset, transform=null) {
@@ -184,6 +214,54 @@ function makeName(nameData) {
     return `s${nameData.idx}`
 }
 
+function makeResults(fileVcfData, nd, x, y, selectedChromosome) {
+    const result = []
+
+    var item
+    item = spacerBlock(makeName(nd), x, y, 2)
+    x = item.newX
+    result.push(item)
+
+    var idx = 0
+    for (const variantCall of fileVcfData.contents) {
+        if (variantCall.CHROM == selectedChromosome) {
+            item = horizConnector(makeName(nd), x, y)
+            x = item.newX
+            result.push(item)
+
+            var ary = sequenceBlock(makeName(nd), x, y, 0, variantCall.REF)
+            //var baseItem = ary[0]
+            result.push(...ary)
+            var vOffset = 1
+            for (const alt of variantCall.ALT) {
+                var actualVOffset = vOffset
+                var rotate = 45
+                if (idx % 2 == 0) {
+                    actualVOffset *= -1
+                    rotate = -45
+                }
+                var rbary = sequenceBlock(makeName(nd), x, y, actualVOffset, alt, rotate)
+                result.push(...rbary)
+                result.push(vertConnector(makeName(nd), x, y, actualVOffset))
+                vOffset += 1
+            }
+            for (var bi of ary) {
+                x = Math.max(x, bi.newX)
+            }
+        }
+        idx += 1
+    }
+
+    item = horizConnector(makeName(nd), x, y)
+    x = item.newX
+    result.push(item)
+
+    item = spacerBlock(makeName(nd), x, y, 2)
+    x = item.newX
+    result.push(item)
+    return result
+}
+
 export default {
     name: 'VisualizePanel',
     components:{
@@ -211,30 +289,10 @@ export default {
             var y = this.startY
             const nd = {
                 idx: 1
-            }        
+            }
             const result = []
-
             /*
-            const gChildren = [{
-                    key: 'a',
-                    type: 'rect',
-                    attrs: {
-                        x: 0,
-                        y: 0,
-                        width: 20,
-                        height: 30,
-                        fill: 'red'                        
-                    }
-                }]
-            gChildren.push()
-            result.push( {
-                key: 'g', 
-                type: 'g',
-                attrs: {
-                    x: x,
-                    y: y,                    
-                }, children: gChildren
-            })*/
+            const result = []
 
             var item
             item = spacerBlock(makeName(nd), x, y, 2)
@@ -250,88 +308,42 @@ export default {
                     x = item.newX
                     result.push(item)
 
-                    var size = variantCall.REF.length
-                    var color = letterToColor[variantCall.REF[0]] || 'grey'
-                    var baseItem = roundedBlock(makeName(nd), x, y, 0, size, color)
-                    result.push(baseItem)
+                    var ary = sequenceBlock(makeName(nd), x, y, 0, variantCall.REF)
+                    //var baseItem = ary[0]
+                    result.push(...ary)
                     var vOffset = 1
                     for (const alt of variantCall.ALT) {
-                        size = alt.length
-                        //size += 1
                         var actualVOffset = vOffset
                         var rotate = 45
                         if (idx % 2 == 0) {
                             actualVOffset *= -1
                             rotate = -45
                         }
-                        color = letterToColor[alt[0]] || 'grey'
-                        result.push(roundedBlock(makeName(nd), x, y, actualVOffset, size, color, rotate))
+                        var rbary = sequenceBlock(makeName(nd), x, y, actualVOffset, alt, rotate)
+                        result.push(...rbary)
                         result.push(vertConnector(makeName(nd), x, y, actualVOffset))
                         vOffset += 1
                     }
-                    x = baseItem.newX               
+                    for (var bi of ary) {
+                        x = Math.max(x, bi.newX)
+                    }
                 }
                 idx += 1
             }
-            
 
-            // beginning of shape
-            /*
-            var item
+            item = horizConnector(makeName(nd), x, y)
+            x = item.newX
+            result.push(item)
+
             item = spacerBlock(makeName(nd), x, y, 2)
             x = item.newX
             result.push(item)
-
-            item = horizConnector(makeName(nd), x, y)
-            x = item.newX
-            result.push(item)
-
-            // first colored block
-            var baseItem = roundedBlock(makeName(nd), x, y, 0, 1, 'cyan')
-            result.push(baseItem)
-            
-            result.push(roundedBlock(makeName(nd), x, y, 1, 1, 'orange'))
-            result.push(vertConnector(makeName(nd), x, y, 1))
-
-            result.push(roundedBlock(makeName(nd), x, y, 2, 1, 'white'))
-            result.push(vertConnector(makeName(nd), x, y, 2))
-
-            x = baseItem.newX
-
-            item = horizConnector(makeName(nd), x, y)
-            x = item.newX
-            result.push(item)
-
-            // second colored block
-            baseItem = roundedBlock(makeName(nd), x, y, 0, 1, 'yellow')
-            result.push(baseItem)
-            
-            result.push(roundedBlock(makeName(nd), x, y, -1, 1, 'cyan'))
-            result.push(vertConnector(makeName(nd), x, y, -1))
-
-            x = baseItem.newX
-
-            item = horizConnector(makeName(nd), x, y)
-            x = item.newX
-            result.push(item)
-            
-            // third colored block
-            baseItem = roundedBlock(makeName(nd), x, y, 0, 1, 'green')
-            result.push(baseItem)
-            
-            result.push(roundedBlock(makeName(nd), x, y, 1, 1, 'cyan'))
-            result.push(vertConnector(makeName(nd), x, y, 1))
-
-            x = baseItem.newX
-
-            item = horizConnector(makeName(nd), x, y)
-            x = item.newX
-            result.push(item)            
-
-            // end of shape
-
-            result.push(spacerBlock(makeName(nd), x, y, 3))
             */
+            for(var fileVcfData of this.vcfData) {
+                result.push(...makeResults(fileVcfData, nd, x, y, this.selectedChromosome))
+                y += 200
+            }
+            
             return result
         },
         summaryVCFData() {
