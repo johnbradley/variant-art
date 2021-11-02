@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: '/vca/'
+  publicPath: '/vca/',
   transpileDependencies: [
     'vuetify'
   ]
