@@ -49,6 +49,15 @@
                 :center="false"
     >
             <svg width="1000" height="400" style="border:1px solid black">
+                <text 
+                    v-for="txt in computedText" 
+                    :key="txt.key"
+                    :x="txt.x"
+                    :y="txt.y"
+                    font-size="12px"
+                    >
+                    {{txt.content}}
+                </text>
                 <SvgElement
                     v-for="svg in computedSvgArray"
                     :key="svg.key"
@@ -94,6 +103,13 @@ const connectorConfig = {
     initialOffset: 10
 }
 
+const subwayMapConfig = {
+    height: 200,
+    labelWidth: 60,
+    labelLeftMargin: 10,
+    labelTopMargin: 9,
+}
+
 function spacerBlock(key, x, y, size) {
     const vOffset = 0
     const fill = 'white'
@@ -128,17 +144,19 @@ function sequenceBlock(key, x, y, vOffset, seq, rotate=null) {
         //var block = roundedBlock(key, x, y, vOffset, size, "white", rotate)
         //x = block.newX
         //result.push(block)
+        var idx = 1;
         var firstTransform = null
         for (const letter of seq) {
             fill = letterToColor[letter] || 'grey'
-            var block = roundedBlock(key, x, y, vOffset, 1, fill, rotate)
+            var block = roundedBlock(key + "_" + idx, x, y, vOffset, 1, fill, rotate)
             if (firstTransform == null) {
                 firstTransform = block.attrs.transform
             } else {
                 block.attrs.transform = firstTransform
             }
             x = block.newX
-            result.push(block)     
+            result.push(block)   
+            idx += 1  
         }
     }
     return result
@@ -216,7 +234,6 @@ function makeName(nameData) {
 
 function makeResults(fileVcfData, nd, x, y, selectedChromosome) {
     const result = []
-
     var item
     item = spacerBlock(makeName(nd), x, y, 2)
     x = item.newX
@@ -228,9 +245,7 @@ function makeResults(fileVcfData, nd, x, y, selectedChromosome) {
             item = horizConnector(makeName(nd), x, y)
             x = item.newX
             result.push(item)
-
             var ary = sequenceBlock(makeName(nd), x, y, 0, variantCall.REF)
-            //var baseItem = ary[0]
             result.push(...ary)
             var vOffset = 1
             for (const alt of variantCall.ALT) {
@@ -284,8 +299,25 @@ export default {
         }
     },
     computed: {
+        computedText() {
+            const result = []
+            var idx = 0
+            for(var fileVcfData of this.vcfData) {
+                var filename = fileVcfData.file.replace(".vcf", "")
+                var x = this.startX + subwayMapConfig.labelLeftMargin
+                var y = this.startY + subwayMapConfig.height * idx + subwayMapConfig.labelTopMargin
+                result.push({
+                    key: `txt${idx}`,
+                    x: x,
+                    y: y,
+                    content: `${this.selectedChromosome}: ${filename}`,
+                })             
+                idx += 1
+            }
+            return result            
+        },
         computedSvgArray() {
-            var x = this.startX
+            var x = this.startX + subwayMapConfig.labelWidth
             var y = this.startY
             const nd = {
                 idx: 1
@@ -341,7 +373,7 @@ export default {
             */
             for(var fileVcfData of this.vcfData) {
                 result.push(...makeResults(fileVcfData, nd, x, y, this.selectedChromosome))
-                y += 200
+                y += subwayMapConfig.height
             }
             
             return result
