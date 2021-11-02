@@ -9,7 +9,7 @@ jobs:
     - id: Build-Vue
       uses: xRealNeon/VuePagesAction@1.0.1
       with:
-        username: 'YourGithubName'
-        reponame: 'YourRepoName'
+        username: 'johnbradley'
+        reponame: 'vca'
         token: ${{ secrets.GITHUB_TOKEN }} # Leave this line unchanged
         useyarn: true
