@@ -18,7 +18,7 @@
         </v-btn>
       </router-link>
       <v-btn
-        href="https://github.com/johnbradley"
+        href="https://github.com/johnbradley/variant-art"
         target="_blank"
         text
       > Source
