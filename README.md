@@ -2,6 +2,8 @@
 
 Create a visualization based on VCF files.
 
+Visit website at [johnbradley.github.io/variant-art](https://johnbradley.github.io/variant-art/)
+
 ## TODO
 
 Spacers for skipped positions
