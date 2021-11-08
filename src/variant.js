@@ -1,5 +1,6 @@
 
 export function parseVariantCalls(text) {
+    // the returned items will be sorted based on POS numerically    
     const variantCalls = []
     text.split('\n').forEach((line) => {
         if (line !== '' && !line.startsWith('#')) {
@@ -12,7 +13,39 @@ export function parseVariantCalls(text) {
         })
         }
     })
-    //sort positions numerically
     variantCalls.sort((a, b) => (a.POS > b.POS) ? 1 : -1)
-    return variantCalls;
+    return variantCalls
 }
+
+export function readFilePromise(file) {
+    return new Promise((resolve, reject) => {
+        var fr = new FileReader()
+        fr.onload = () => {
+          resolve(fr.result )
+        };
+        fr.onerror = reject
+        fr.readAsText(file)
+      })
+}
+
+export async function vcfDataFromFiles(files) {
+    const fileData = []
+    for (const file of files) {
+        const contents = await readFilePromise(file)
+        fileData.push({
+            file: file.name,
+            contents: parseVariantCalls(contents)
+        })
+    }
+    return fileData
+}
+
+export function findFirstChromosome(vcfData) {
+    for (const fd of vcfData) {
+      for (const content of fd.contents) {
+        return content.CHROM
+      }
+    }
+    return ""
+}
+

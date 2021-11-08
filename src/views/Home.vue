@@ -16,32 +16,14 @@
 <script>
   import SelectInputPanel from '../components/SelectInputPanel'
   import VisualizePanel from '../components/VisualizePanel'
-
-  function findFirstChromosome(vcfData) {
-    for (const fd of vcfData) {
-      for (const content of fd.contents) {
-        return content.CHROM
-      }
-    }
-    return ""
-  }
+  import { findFirstChromosome } from '../variant.js'
 
   export default {
     name: 'Home',
     data: () => ({
       state: 'select-input',
-      vcfData: [{
-        file: "myfile1",
-        contents: [
-          {
-            CHROM: "chr1",
-            POS: 12,
-            REF: "T",
-            ALT: ["G"]
-          }
-        ]
-      }],
-      selectedChromosome: "chr1"
+      vcfData: [],
+      selectedChromosome: ""
     }),
     components: {
       SelectInputPanel,

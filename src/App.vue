@@ -4,7 +4,7 @@
       app
     >
       <v-icon class="ma-2">mdi-graph</v-icon>
-      <h3>Variant Call Art</h3>
+      <h3>Variant Art</h3>
 
       <v-spacer></v-spacer>
       <router-link to="/">

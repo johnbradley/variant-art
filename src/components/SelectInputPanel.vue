@@ -39,18 +39,7 @@
 
 <script>
   
-  import { parseVariantCalls } from '../variant.js'
-
-  function readFilePromise(file) {
-    return new Promise((resolve, reject) => {
-        var fr = new FileReader();
-        fr.onload = () => {
-          resolve(fr.result )
-        };
-        fr.onerror = reject;
-        fr.readAsText(file);
-      });
-  }
+  import { vcfDataFromFiles } from '../variant.js'
 
   export default {
     name: 'SelectInputPanel',
@@ -65,14 +54,7 @@
           this.snackbarText = "You must select at least 1 VCF file to import."
           this.snackbar = true
         } else {
-          const fileData = [];
-          for (const file of this.selectedFiles) {
-              const contents = await readFilePromise(file)
-              fileData.push({
-                  file: file.name,
-                  contents: parseVariantCalls(contents)
-              })
-          }
+          const fileData = await vcfDataFromFiles(this.selectedFiles);
           this.$emit('visualize', fileData)
         }
       }
