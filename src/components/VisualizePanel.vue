@@ -309,7 +309,7 @@ export default {
                 result.push({
                     key: `txt${idx}`,
                     x: x,
-                    y: y,
+                    y: y + 20,
                     content: `${this.selectedChromosome}: ${filename}`,
                 })             
                 idx += 1
