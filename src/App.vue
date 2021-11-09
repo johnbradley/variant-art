@@ -9,12 +9,12 @@
       <v-spacer></v-spacer>
       <router-link to="/">
         <v-btn text>
-          Home
+          Concept
         </v-btn>
       </router-link>
-      <router-link to="/about">
+      <router-link to="/visualize">
         <v-btn text>
-            About
+          Visualize
         </v-btn>
       </router-link>
       <v-btn

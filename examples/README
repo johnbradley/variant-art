@@ -1,0 +1,17 @@
+####################################
+# COVID-19 Genome Sequence Dataset #
+####################################
+Last Updated:
+Description: A centralized sequence repository for all strains of novel coronavirus (SARS-CoV-2) submitted to the National Center for Biotechnology Information (NCBI) as well as sequences from other members of the Coronaviridae family, roughly 19,500 unique sequences. Metadata for this dataset can be found at s3://sra-pub-cov2-metadata (in progress)
+
+The following diagram describes how data are structured within the S3 bucket s3://sra-pub-sars-cov2/
+
+sra-pub-sars-cov2/
+   ├── README.txt # this file
+   ├── sra-src/ # contains source files for the SRA Run archives which are the user submitted next-generation sequencing files 
+   │     ├── AccessionID 0 # each AccessionID contains all files submitted by the investigator under a single accession and can be FASTQ, BAM, or CRAM
+   │     ┊
+   │
+   ├── run/ # contains the SRA Run archive file after processing the source files.
+         ├── AccessionID # each AccessionID contains processed SRA files, and require the SRA Toolkit to access the standardized next-generation reads (https://github.com/ncbi/sra-tools/wiki/01.-Downloading-SRA-Toolkit).
+   │     ┊
