@@ -16,7 +16,7 @@
 <script>
   import SelectInputPanel from '../components/SelectInputPanel'
   import VisualizePanel from '../components/VisualizePanel'
-  import { findFirstChromosome } from '../variant.js'
+  import { findFirstChromosome } from '../readVCFs.js'
 
   export default {
     name: 'Home',

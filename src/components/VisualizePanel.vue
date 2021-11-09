@@ -81,7 +81,7 @@
 <script>
 import SvgElement from '../components/SvgElement'
 import SvgPanZoom from 'vue-svg-pan-zoom';
-import { subwayMapConfig, makeResults } from '../visualize.js'
+import { subwayMapConfig, makeResults } from '../visualizeVariants.js'
 
 
 export default {

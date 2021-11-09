@@ -39,7 +39,7 @@
 
 <script>
   
-  import { vcfDataFromFiles } from '../variant.js'
+  import { vcfDataFromFiles } from '../readVCFs.js'
 
   export default {
     name: 'SelectInputPanel',

@@ -1,4 +1,3 @@
-
 export function parseVariantCalls(text) {
     // the returned items will be sorted based on POS numerically    
     const variantCalls = []
@@ -48,4 +47,3 @@ export function findFirstChromosome(vcfData) {
     }
     return ""
 }
-
