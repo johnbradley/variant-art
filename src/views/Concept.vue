@@ -16,7 +16,7 @@
 
     <v-card-text>
       <p>
-      Visualizing genetic data can be challenging due to the length of genomes.
+      Visualizing an entire genome can be challenging due to the length of the genome.
       However genetic variants can be visualized as a difference from a reference genome.
       This website will let you create a visualization for one or more variants.
       </p>
