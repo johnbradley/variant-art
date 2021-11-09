@@ -69,7 +69,7 @@
                     :y="txt.y"
                     font-size="12px"
                     >
-                    
+                    {{txt.content}}
                 </text>                
             </svg>
             </SvgPanZoom>
