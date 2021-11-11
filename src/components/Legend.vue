@@ -1,5 +1,5 @@
 <template>
-  <svg width="400" height="100">
+  <svg width="400" height="120">
     <rect
       x="10"
       y="10"
