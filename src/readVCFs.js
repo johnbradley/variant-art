@@ -6,7 +6,7 @@ export function parseVariantCalls(text) {
         const parts = line.split('\t')
         variantCalls.push({
             CHROM: parts[0],
-            POS: parts[1],
+            POS: parseInt(parts[1]),
             REF: parts[3],
             ALT: parts[4].split(',')
         })

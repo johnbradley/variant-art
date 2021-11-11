@@ -146,23 +146,36 @@ function makeName(nameData) {
 export function makeResults(fileVcfData, nd, x, y, selectedChromosome) {
     const result = []
     var item
-    item = spacerBlock(makeName(nd), x, y, 2)
-    x = item.newX
-    result.push(item)
+    var first = true
 
-    var idx = 0
+    var furthestPosition = 1
     for (const variantCall of fileVcfData.contents) {
         if (variantCall.CHROM == selectedChromosome) {
+            if (variantCall.POS > furthestPosition) {
+                if (!first) {
+                    item = horizConnector(makeName(nd), x, y)
+                    x = item.newX
+                    result.push(item)                    
+                }
+                var diff = variantCall.POS - furthestPosition
+                item = spacerBlock(makeName(nd), x, y, diff.toString().length)
+                x = item.newX
+                result.push(item)
+            }
+            first = false
+            
             item = horizConnector(makeName(nd), x, y)
             x = item.newX
             result.push(item)
+
             var ary = sequenceBlock(makeName(nd), x, y, 0, variantCall.REF)
+            furthestPosition = variantCall.POS + variantCall.REF.length
             result.push(...ary)
             var vOffset = 1
             for (const alt of variantCall.ALT) {
                 var actualVOffset = vOffset
                 var rotate = 45
-                if (idx % 2 == 0) {
+                if (variantCall.POS % 2 == 0) {
                     actualVOffset *= -1
                     rotate = -45
                 }
@@ -175,15 +188,6 @@ export function makeResults(fileVcfData, nd, x, y, selectedChromosome) {
                 x = Math.max(x, bi.newX)
             }
         }
-        idx += 1
     }
-
-    item = horizConnector(makeName(nd), x, y)
-    x = item.newX
-    result.push(item)
-
-    item = spacerBlock(makeName(nd), x, y, 2)
-    x = item.newX
-    result.push(item)
     return result
 }
