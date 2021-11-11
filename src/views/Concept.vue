@@ -44,7 +44,7 @@ chr1   2371 . T   A ...
           subway map style visualization. Each white block represents part of
           the reference genome that is skipped. Each block along the center
           represents a nucleotide from the reference genome. Each diagnal box
-          represents the alternative nucleotide(s) the variant.
+          represents the alternative nucleotide(s) of the variant.
         </p>
       </v-card-text>
 
