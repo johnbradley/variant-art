@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="500">
+  <v-dialog v-model="show" width="500">
     <template v-slot:activator="{ on, attrs }">
       <v-btn small class="float-right" v-bind="attrs" v-on="on"> Legend </v-btn>
     </template>
@@ -14,7 +14,7 @@
 
       <v-card-actions class="justify-end">
         <v-spacer></v-spacer>
-        <v-btn text @click="dialog = false">Close</v-btn>
+        <v-btn text @click="show = false">Close</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -28,7 +28,7 @@ export default {
   },
   data() {
     return {
-      dialog: false,
+      show: false,
     };
   },
 };

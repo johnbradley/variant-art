@@ -1,5 +1,5 @@
 <template>
-  <svg width="400" height="120">
+  <svg width="400" height="140">
     <rect
       x="10"
       y="10"
@@ -11,7 +11,7 @@
       stroke-width="2"
     ></rect>
     <text x="45" y="19" class="legendText">
-      - multiple skipped reference sequences
+      - multiple reference sequences that match the variant
     </text>
     <rect
       data-v-52ef6280=""
@@ -61,8 +61,8 @@
       stroke-width="2"
     ></rect>
     <text x="45" y="96" class="legendText">- single cytosine (C)</text>
-    <text x="10" y="116" class="legendText">
-      Rotated blocks represent variant alternatives
+    <text x="10" y="120" class="legendText">
+      Rotated blocks represent the variant's alternate alleles
     </text>
   </svg>
 </template>

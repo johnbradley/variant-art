@@ -1,8 +1,17 @@
 <template>
   <v-container>
-    <v-row class="text-center">
+    <v-row class="text-center pt-3">
       <v-col>
-        <h2>Select VCF file(s)</h2>
+        <h2>Select Variants</h2>
+      </v-col>
+    </v-row>
+    <v-row class="text-center pt-3">
+      <v-col>
+        <p>
+          To create the visualization VCF files must be provided. Below select
+          VCF files from your computer and click Import. If you do not have VCF
+          files click the Use Sample Data button.
+        </p>
       </v-col>
     </v-row>
     <v-row class="text-center">
@@ -18,7 +27,12 @@
     </v-row>
     <v-row class="text-center">
       <v-col>
-        <v-btn color="primary" v-on:click="importData"> Import Data </v-btn>
+        <v-btn color="primary" v-on:click="importData">
+          Import Selected Files
+        </v-btn>
+      </v-col>
+      <v-col>
+        <v-btn outlined v-on:click="importSampleData">Use Sample Data</v-btn>
       </v-col>
     </v-row>
     <v-snackbar v-model="snackbar" :timeout="3000">
@@ -46,6 +60,10 @@ export default {
         const fileData = await vcfDataFromFiles(this.selectedFiles);
         this.$emit("visualize", fileData);
       }
+    },
+    async importSampleData() {
+      const fileData = await vcfDataFromFiles(this.selectedFiles);
+      this.$emit("visualize", fileData);
     },
   },
 };

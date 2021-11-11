@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Concept from '../views/Concept.vue'
-import Visualize from '../views/Visualize.vue'
+import ConceptView from '../views/ConceptView.vue'
+import CreateView from '../views/CreateView.vue'
 
 Vue.use(VueRouter)
 
@@ -9,12 +9,12 @@ const routes = [
   {
     path: '/',
     name: 'Concept',
-    component: Concept
+    component: ConceptView
   },
   {
-    path: '/visualize',
-    name: 'Visualize',
-    component: Visualize
+    path: '/create',
+    name: 'Create',
+    component: CreateView
   }
 ]
 
