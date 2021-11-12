@@ -2,7 +2,7 @@
   <v-container>
     <v-row class="text-center pt-3">
       <v-col>
-        <h2>Select Variants</h2>
+        <h3>Select Variants</h3>
       </v-col>
     </v-row>
     <v-row class="text-center pt-3">

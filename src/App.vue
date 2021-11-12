@@ -2,14 +2,8 @@
   <v-app>
     <v-app-bar app>
       <v-icon class="ma-2">mdi-graph</v-icon>
-      <h3 class="text-no-wrap">Variant Art</h3>
+      <h2 class="text-no-wrap">Variant Art</h2>
       <v-spacer></v-spacer>
-      <router-link to="/">
-        <v-btn text> Concept </v-btn>
-      </router-link>
-      <router-link to="/Create">
-        <v-btn text> Create </v-btn>
-      </router-link>
       <v-btn
         fab
         text
@@ -18,12 +12,24 @@
       >
         <v-icon>mdi-github</v-icon>
       </v-btn>
+      <template v-slot:extension>
+        <v-tabs align-with-title>
+          <v-tab to="/">Concept</v-tab>
+          <v-tab to="/create">Create</v-tab>
+        </v-tabs>
+      </template>
     </v-app-bar>
     <v-main>
       <router-view />
     </v-main>
   </v-app>
 </template>
+
+<style scoped>
+.router-link-active {
+  color: blue;
+}
+</style>
 
 <script>
 export default {

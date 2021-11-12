@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <div class="mx-auto" fluid>
-      <h2 class="pa-2">Visualizing Variants</h2>
+      <h3 class="pa-2">Visualizing Variants</h3>
       <v-card-text>
         <v-row>
           <v-col>
