@@ -1,3 +1,5 @@
+const pako = require('pako');
+
 export function parseVariantCalls(text) {
     // the returned items will be sorted based on POS numerically    
     const variantCalls = []
@@ -17,13 +19,19 @@ export function parseVariantCalls(text) {
 }
 
 export function readFilePromise(file) {
+    
     return new Promise((resolve, reject) => {
+        const decoder = new TextDecoder()
         var fr = new FileReader()
         fr.onload = () => {
-          resolve(fr.result )
+            var data = fr.result;
+            if(file.name.endsWith(".gz")) {
+                data = pako.inflate(data)
+            } 
+            resolve(decoder.decode(data))
         };
         fr.onerror = reject
-        fr.readAsText(file)
+        fr.readAsArrayBuffer(file)
       })
 }
 
