@@ -39,6 +39,19 @@ export async function vcfDataFromFiles(files) {
     return fileData
 }
 
+export async function vcfDataFromURLs(urls) {
+    const fileData = []
+    for (const url of urls) {
+        const response = await fetch(url)
+        const contents = await response.text()
+        fileData.push({
+            file: url,
+            contents: parseVariantCalls(contents)
+        })
+    }
+    return fileData
+}
+
 export function findFirstChromosome(vcfData) {
     for (const fd of vcfData) {
       for (const content of fd.contents) {

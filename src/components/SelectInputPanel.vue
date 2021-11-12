@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { vcfDataFromFiles } from "../readVCFs.js";
+import { vcfDataFromFiles, vcfDataFromURLs } from "../readVCFs.js";
 
 export default {
   name: "SelectInputPanel",
@@ -62,7 +62,10 @@ export default {
       }
     },
     async importSampleData() {
-      const fileData = await vcfDataFromFiles(this.selectedFiles);
+      const exampleURL =
+        "https://raw.githubusercontent.com/johnbradley/variant-art/master/examples/one.vcf";
+      const fileData = await vcfDataFromURLs([exampleURL]);
+
       this.$emit("visualize", fileData);
     },
   },
