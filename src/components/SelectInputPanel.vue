@@ -1,20 +1,16 @@
 <template>
   <v-container>
-    <v-row class="text-center pt-3">
+    <h3>Select Variants</h3>
+    <v-row>
       <v-col>
-        <h3>Select Variants</h3>
-      </v-col>
-    </v-row>
-    <v-row class="text-center pt-3">
-      <v-col>
-        <p>
+        <p class="text-body-2">
           To create the visualization VCF files must be provided. Below select
           VCF files from your computer and click Import. If you do not have VCF
           files click the Use Sample Data button.
         </p>
       </v-col>
     </v-row>
-    <v-row class="text-center">
+    <v-row>
       <v-col>
         <v-file-input
           chips
