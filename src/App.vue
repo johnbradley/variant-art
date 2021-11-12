@@ -5,17 +5,18 @@
       <h3>Variant Art</h3>
       <v-spacer></v-spacer>
       <router-link to="/">
-        <v-btn text> Concept </v-btn>
+        <v-btn small text> Concept </v-btn>
       </router-link>
       <router-link to="/Create">
-        <v-btn text> Create </v-btn>
+        <v-btn small text> Create </v-btn>
       </router-link>
       <v-btn
+        small
         href="https://github.com/johnbradley/variant-art"
         target="_blank"
         text
       >
-        Source
+        Code
         <v-icon>mdi-open-in-new</v-icon>
       </v-btn>
     </v-app-bar>
