@@ -20,7 +20,7 @@
       width="10"
       height="10"
       rx="2"
-      fill="#CDFD34"
+      fill="#C43314"
       stroke="black"
       stroke-width="2"
     ></rect>
