@@ -2,7 +2,9 @@
   <v-app>
     <v-app-bar app>
       <v-icon class="ma-2">mdi-graph</v-icon>
-      <h2 class="text-no-wrap">Variant Art</h2>
+      <h2 class="text-no-wrap">
+        Variant <span class="font-italic font-weight-medium">Art</span>
+      </h2>
       <v-spacer></v-spacer>
       <v-btn
         fab
