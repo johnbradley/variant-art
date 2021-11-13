@@ -1,8 +1,8 @@
 <template>
   <v-container>
-    <v-row class="text-center">
+    <v-row>
       <v-col>
-        <h2>Visualization <LegendDialog /></h2>
+        <h3>Visualization <LegendDialog /></h3>
       </v-col>
     </v-row>
     <v-row>
@@ -20,10 +20,9 @@
           dense
         ></v-select>
       </v-col>
-      <v-col> </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col align="center">
         <SvgPanZoom :zoomEnabled="true" :controlIconsEnabled="true">
           <svg width="80vw" height="400" style="border: 1px solid black">
             <SvgElement

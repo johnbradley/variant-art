@@ -1,9 +1,13 @@
 <template>
   <v-container>
-    <h3>Select Variants</h3>
     <v-row>
       <v-col>
-        <p class="text-body-2">
+        <h3>Select Variants</h3>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <p class="text-body-1">
           To create the visualization VCF files must be provided. Below select
           VCF files from your computer and click Import. If you do not have VCF
           files click the Use Sample Data button.

@@ -1,10 +1,14 @@
 <template>
   <v-container>
     <div class="mx-auto" fluid>
-      <h3>Visualizing Variants</h3>
       <v-row>
-        <v-col>
-          <p class="text-body-2">
+        <v-col cols="10">
+          <h3>Visualizing Variants</h3>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="10">
+          <p class="text-body-1">
             A genetic variant is an organism that has some genetic differences
             from a reference genome. Genetic variants can be visualized using
             just these differences. This website will let you create a
@@ -32,8 +36,8 @@ chr1   2371 . C   TG  ...
             class="elevation-5 d-block rounded example"
           />
         </v-col>
-        <v-col>
-          <p class="text-body-2">
+        <v-col align="left">
+          <p class="text-body-1">
             A VCF (Variant Call Format) file is converted into a subway map
             style visualization. Each white block represents part of the
             reference genome that matches the variant. Each colored block along
@@ -43,6 +47,7 @@ chr1   2371 . C   TG  ...
           <h4 class="text-center">Legend</h4>
           <Legend />
         </v-col>
+        <v-spacer></v-spacer>
       </v-row>
       <v-row>
         <v-col class="text-center">
