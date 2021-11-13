@@ -59,7 +59,7 @@ export default {
     },
     async importSampleData() {
       const exampleURL =
-        "https://raw.githubusercontent.com/johnbradley/variant-art/master/examples/one.vcf";
+        "https://raw.githubusercontent.com/johnbradley/variant-art/master/examples/example.vcf";
       const fileData = await vcfDataFromURLs([exampleURL]);
 
       this.$emit("visualize", fileData);

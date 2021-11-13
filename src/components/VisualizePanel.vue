@@ -20,6 +20,7 @@
           dense
         ></v-select>
       </v-col>
+      <v-col> </v-col>
     </v-row>
     <v-row>
       <v-col>
@@ -89,19 +90,30 @@ export default {
       startX: 20,
       startY: 95,
       showLegend: true,
+      showLabels: true,
     };
   },
   computed: {
     fileNames() {
       return this.vcfData
-        .map((x) => x.file.substr(0, x.file.indexOf(".")) || x.file)
+        .map(
+          (x) =>
+            x.file.split("/").reverse()[0].substr(0, x.file.indexOf(".")) ||
+            x.file
+        )
         .join(", ");
     },
     computedText() {
+      if (!this.showLabels) {
+        return [];
+      }
       const result = [];
       var idx = 0;
       for (var fileVcfData of this.vcfData) {
-        var filename = fileVcfData.file.replace(".vcf", "");
+        var filename = fileVcfData.file
+          .split("/")
+          .reverse()[0]
+          .replace(".vcf", "");
         var x = this.startX + subwayMapConfig.labelLeftMargin;
         var y =
           this.startY +
