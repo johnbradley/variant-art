@@ -21,13 +21,13 @@ export const subwayMapConfig = {
     labelTopMargin: 9,
 }
 
-function spacerBlock(key, x, y, size) {
+function spacerBlock(nd, x, y, size) {
     const vOffset = 0
     const fill = 'white'
-    return roundedBlock(key, x, y, vOffset, size, fill)
+    return roundedBlock(nd, x, y, vOffset, size, fill)
 }
 
-function roundedBlock(key, x, y, vOffset, size, fill, rotate=null, stroke=null) {
+function roundedBlock(nd, x, y, vOffset, size, fill, rotate=null, stroke=null) {
     if (stroke == null) {
         stroke = blockConfig.stroke
     }
@@ -38,43 +38,41 @@ function roundedBlock(key, x, y, vOffset, size, fill, rotate=null, stroke=null) 
         transform = `rotate(${rotate} ${x+5} ${adjustedY+5})`
     }
     return svgRect(
-        key, x, adjustedY, width, height, 
+        nd, x, adjustedY, width, height, 
         blockConfig.rx, fill, 
         blockConfig.stroke, blockConfig.strokeWidth,
         transform
     )
 }
 
-function sequenceBlock(key, x, y, vOffset, seq, rotate=null) {
+function sequenceBlock(nd, x, y, vOffset, seq, rotate=null) {
     var size = seq.length
     var fill = letterToColor[seq[0]] || 'grey'
     const result = []
     if (size == 1) {
-        result.push(roundedBlock(key, x, y, vOffset, size, fill, rotate))
+        result.push(roundedBlock(nd, x, y, vOffset, size, fill, rotate))
     } else {
         //var block = roundedBlock(key, x, y, vOffset, size, "white", rotate)
         //x = block.newX
         //result.push(block)
-        var idx = 1;
         var firstTransform = null
         for (const letter of seq) {
             fill = letterToColor[letter] || 'grey'
-            var block = roundedBlock(key + "_" + idx, x, y, vOffset, 1, fill, rotate)
+            var block = roundedBlock(nd, x, y, vOffset, 1, fill, rotate)
             if (firstTransform == null) {
                 firstTransform = block.attrs.transform
             } else {
                 block.attrs.transform = firstTransform
             }
             x = block.newX
-            result.push(block)   
-            idx += 1  
+            result.push(block)
         }
     }
     return result
     
 }
 
-function vertConnector(key, x, y, vOffset, transform=null) {
+function vertConnector(nd, x, y, vOffset, transform=null) {
     if (vOffset < 0) {
         vOffset += 1
     }
@@ -82,17 +80,17 @@ function vertConnector(key, x, y, vOffset, transform=null) {
     const adjustedX = x + (blockConfig.baseWidth / 2);
     const y1 = adjustedY
     const y2 = y1 - connectorConfig.height
-    return svgLine(key, adjustedX, y1, adjustedX, y2, 
+    return svgLine(nd, adjustedX, y1, adjustedX, y2, 
         connectorConfig.stroke, connectorConfig.strokeWidth,
         transform)
 }
 
-function horizConnector(key, x, y) {
+function horizConnector(nd, x, y) {
     const adjustedY = y + (blockConfig.baseHeight / 2)
     const adjustedX = x
     const x1 = adjustedX
     const x2 = adjustedX + blockConfig.baseWidth
-    return svgLine(key, x1, adjustedY, x2, adjustedY, 
+    return svgLine(nd, x1, adjustedY, x2, adjustedY, 
         connectorConfig.stroke, connectorConfig.strokeWidth)
 }
 
@@ -104,9 +102,13 @@ const letterToColor = {
     C: "#CDFD34",
 }
 
-function svgRect(key, x, y, width, height, rx, fill, stroke, strokeWidth, transform=null) {
+function svgRect(nd, x, y, width, height, rx, fill, stroke, strokeWidth, transform=null) {
+    var pos = null;
+    if (nd.variantCall) {
+        pos = nd.variantCall.POS;
+    }
     return {
-        key: key, 
+        key: makeName(nd), 
         type: 'rect',
         attrs: {
             x: x,
@@ -118,13 +120,14 @@ function svgRect(key, x, y, width, height, rx, fill, stroke, strokeWidth, transf
             stroke: stroke,
             "stroke-width": strokeWidth,
             transform: transform,
+            "data-pos": pos,
         },
         newX: x + width,
     }
 }
-function svgLine(key, x1, y1, x2, y2, stroke, strokeWidth) {
+function svgLine(nd, x1, y1, x2, y2, stroke, strokeWidth) {
     return {
-        key: key,
+        key: makeName(nd),
         type: 'line',
         attrs: {
             x1: x1,
@@ -149,26 +152,31 @@ export function makeResults(fileVcfData, nd, x, y, selectedChromosome) {
     var first = true
 
     var furthestPosition = 1
+    
     for (const variantCall of fileVcfData.contents) {
         if (variantCall.CHROM == selectedChromosome) {
+            //spacer blocks do not have a position
+            nd.variantCall = null
             if (variantCall.POS > furthestPosition) {
                 if (!first) {
-                    item = horizConnector(makeName(nd), x, y)
+                    item = horizConnector(nd, x, y)
                     x = item.newX
                     result.push(item)                    
                 }
+                
                 var diff = variantCall.POS - furthestPosition
-                item = spacerBlock(makeName(nd), x, y, diff.toString().length)
+                item = spacerBlock(nd, x, y, diff.toString().length)
                 x = item.newX
                 result.push(item)
             }
             first = false
+            nd.variantCall = variantCall
             
-            item = horizConnector(makeName(nd), x, y)
+            item = horizConnector(nd, x, y)
             x = item.newX
             result.push(item)
 
-            var ary = sequenceBlock(makeName(nd), x, y, 0, variantCall.REF)
+            var ary = sequenceBlock(nd, x, y, 0, variantCall.REF)
             furthestPosition = variantCall.POS + variantCall.REF.length
             result.push(...ary)
             var vOffset = 1
@@ -179,9 +187,9 @@ export function makeResults(fileVcfData, nd, x, y, selectedChromosome) {
                     actualVOffset *= -1
                     rotate = -45
                 }
-                var rbary = sequenceBlock(makeName(nd), x, y, actualVOffset, alt, rotate)
+                var rbary = sequenceBlock(nd, x, y, actualVOffset, alt, rotate)
                 result.push(...rbary)
-                result.push(vertConnector(makeName(nd), x, y, actualVOffset))
+                result.push(vertConnector(nd, x, y, actualVOffset))
                 vOffset += 1
             }
             for (var bi of ary) {

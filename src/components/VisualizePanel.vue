@@ -19,12 +19,18 @@
           label="Selected Chromosome"
           dense
         ></v-select>
+        {{ pos }}
       </v-col>
     </v-row>
     <v-row>
       <v-col align="center">
         <SvgPanZoom :zoomEnabled="true" :controlIconsEnabled="true">
-          <svg width="80vw" height="400" style="border: 1px solid black">
+          <svg
+            width="80vw"
+            height="400"
+            style="border: 1px solid black"
+            @click="svgClick"
+          >
             <SvgElement
               v-for="svg in computedSvgArray"
               :key="svg.key"
@@ -83,6 +89,13 @@ export default {
     promptForInput() {
       this.$emit("promptForInput");
     },
+    svgClick(evt) {
+      if (evt.target.dataset.pos) {
+        this.pos = "Position: " + evt.target.dataset.pos;
+      } else {
+        this.pos = "";
+      }
+    },
   },
   data() {
     return {
@@ -90,6 +103,7 @@ export default {
       startY: 95,
       showLegend: true,
       showLabels: true,
+      pos: "",
     };
   },
   computed: {
